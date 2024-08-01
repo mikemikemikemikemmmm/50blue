@@ -1,0 +1,24 @@
+[tool.poetry]
+name = "back"
+version = "0.1.0"
+description = ""
+authors = ["mike"]
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "^3.12"
+fastapi = "^0.111.0"
+uvicorn = "^0.30.1"
+mypy = "^1.10.1"
+sqlmodel = "^0.0.19"
+sqlalchemy-utils = "^0.41.2"
+peewee = "^3.17.5"
+passlib = {extras = ["bcrypt"], version = "^1.7.4"}
+bcrypt = "^4.1.3"
+python-jose = {extras = ["cryptography"], version = "^3.3.0"}
+casbin = "^1.36.3"
+
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
