@@ -1,5 +1,6 @@
 from fastapi import APIRouter, Depends, HTTPException, Response
 from typing import List
+from sqlalchemy import select
 
 from src.models.user import Role
 from src.auth.index import required_role
@@ -7,8 +8,10 @@ from src.db.engine import SessionDepend
 from src.crud.index import CRUD
 from src.errorHandler.index import ErrorHandler
 from src.models.topping import *
+from src.models.order_topping_table import order_item_toppings_table
 
-router = APIRouter(prefix="/topping",tags=["topping"])
+router = APIRouter(prefix="/topping", tags=["topping"])
+
 
 @router.get(
     "/",
@@ -39,4 +42,12 @@ def update(update_data: UpdateSchema, session: SessionDepend, id: int):
 
 @router.delete("/{id}", dependencies=[Depends(required_role([Role.MANAGER]))])
 def delete(session: SessionDepend, id: int):
-    return CRUD.delete_one_by_id(session, ToppingModel, id)
+    be_ref_by_order_items = session.execute(
+        order_item_toppings_table.select().where(
+            order_item_toppings_table.c.topping_id == id
+        )
+    ).first()
+    if be_ref_by_order_items:
+        return ErrorHandler.raise_custom_error(code=400,detail="有訂單參考此配料")
+    return CRUD.delete_one_by_id(session,ToppingModel,id)
+    

@@ -36,7 +36,7 @@ export namespace BaseApi {
     }, (error) => {
         const store = useGlobalStore()
         store.setIsLoading(false)
-        store.createAlertData({ type: "error", text: error }) //TODO
+        store.createAlertData({ type: "error", text: error })
         return Promise.reject(error)
     });
 
@@ -51,17 +51,17 @@ export namespace BaseApi {
             store.createAlertData({ type: "error", text: "請求超時" })
         } else {
             const errorMessage = error?.response?.data?.detail || error.message
-            store.createAlertData({ type: "error", text: errorMessage }) //TODO
-            
+            store.createAlertData({ type: "error", text: errorMessage })
+
             const httpCode = error.response.status
-            if (httpCode ===401) { //未認證
+            if (httpCode === 401) { //未認證
                 removeTokenAndRedirectToLogin()
             }
         }
         return Promise.reject(error)
     });
 
-    interface ErrorType { }//TODO
+    interface ErrorType { }
     interface FailResponse {
         response: undefined;
         error: ErrorType;
@@ -170,10 +170,16 @@ export namespace DrinkApi {
 
 export namespace UserApi {
     export type GetResponse = { id: number, email: string, role_str: USER_ROLE }
-    export type CreateData = { email: string, password: string, role: USER_ROLE,password2:string }
+    export type CreateData = { email: string, password: string, role: USER_ROLE, password2: string }
     export type UpdateData = { password: string, role: USER_ROLE }
     export const CRUD =
         new CrudCommonClass<CreateData, UpdateData, GetResponse>("user")
+    export const updatePasswordApi = async (id: number, new_password: string) => {
+        return await BaseApi.putApi(`crud/user/put_password/${id}`, { new_password }, undefined, "密碼修改成功")
+    }
+    export const updateRoleApi = async (id: number, new_role: USER_ROLE) => {
+        return await BaseApi.putApi(`crud/user/put_role/${id}`, { new_role }, undefined, "角色修改成功")
+    }
 }
 export namespace OrderItemApi {
     export type CreateData = {
@@ -204,5 +210,8 @@ export namespace OrderApi {
     }
     export const createApi = async (createData: CreateData) => {
         return await BaseApi.postApi("crud/order", createData, undefined, "訂單新增成功")
+    }
+    export const deleteApi = async (id: number) => {
+        return await BaseApi.deleteApi(`crud/order/${id}`)
     }
 }

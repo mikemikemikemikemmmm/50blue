@@ -87,8 +87,7 @@ const router = createRouter({
     routes: routesData,
 })
 
-router.onError((err:Error) => { //TODO
-    
+router.onError((err: Error) => {
     console.error("Router error:", err.message);
-  });
+});
 export { router, routesData }

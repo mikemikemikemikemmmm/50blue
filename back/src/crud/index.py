@@ -27,7 +27,6 @@ class CRUD:
     @staticmethod
     def delete_one_by_id(session: Session, model: ModelType, id: int):
         item = session.execute(select(model).where(model.id == id)).scalar()
-        print(item)
         if not item:
             return ErrorHandler.raise_404_not_found()
         session.delete(item)

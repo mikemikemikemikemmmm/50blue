@@ -1,9 +1,10 @@
 <script setup lang="ts">
 import { onBeforeMount } from "vue";
+import { RouterView, useRoute, useRouter } from 'vue-router';
+
 import NavComponent from "./components/nav.vue"
 import Loading from "./components/loading.vue"
 import AlertContainer from "./components/alertContainer.vue"
-import { RouterView, useRoute, useRouter } from 'vue-router';
 import { checkTokenWhenFristEnterApi } from "./api/auth";
 import { useGlobalStore } from "./store";
 import { hasToken, removeTokenAndRedirectToLogin } from "./utils";

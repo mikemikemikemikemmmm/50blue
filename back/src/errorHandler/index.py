@@ -1,4 +1,4 @@
-from fastapi import HTTPException, FastAPI,Request
+from fastapi import HTTPException, FastAPI, Request
 from sqlalchemy.exc import SQLAlchemyError
 from fastapi.responses import JSONResponse
 from fastapi.exceptions import RequestValidationError, ResponseValidationError
@@ -26,12 +26,17 @@ class ErrorHandler:
         raise HTTPException(detail=detail, status_code=500)
 
     @staticmethod
-    def raise_409_same_name_item_exist(detail:str = "同名物件已存在"):
+    def raise_409_same_name_item_exist(detail: str = "同名物件已存在"):
         raise HTTPException(detail=detail, status_code=409)
-        
+
+    @staticmethod
+    def raise_custom_error(code: int, detail: str):
+        raise HTTPException(detail=detail, status_code=code)
+
+
 def setup_global_error_handler(app: FastAPI):
     @app.exception_handler(SQLAlchemyError)
-    def handleSQLAlchemyError(request:Request, exc:Exception):
+    def handleSQLAlchemyError(request: Request, exc: Exception):
         exc_str = str(exc)
         print(exc_str)
         detail = "SQL錯誤"
@@ -45,7 +50,7 @@ def setup_global_error_handler(app: FastAPI):
         )
 
     @app.exception_handler(RequestValidationError)
-    def handleRequestValidationError(request:Request, exc:Exception):
+    def handleRequestValidationError(request: Request, exc: Exception):
         print(str(exc))
         return JSONResponse(
             status_code=400,
@@ -53,7 +58,7 @@ def setup_global_error_handler(app: FastAPI):
         )
 
     @app.exception_handler(ResponseValidationError)
-    def handleResponseValidationError(request:Request, exc:Exception):
+    def handleResponseValidationError(request: Request, exc: Exception):
         print(str(exc))
         return JSONResponse(
             status_code=400,
@@ -61,7 +66,7 @@ def setup_global_error_handler(app: FastAPI):
         )
 
     @app.exception_handler(Exception)
-    def global_exception_handler(request:Request, exc: Exception):
+    def global_exception_handler(request: Request, exc: Exception):
         print(str(exc))
         return JSONResponse(
             status_code=500,

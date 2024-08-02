@@ -28,7 +28,7 @@ class UserModel(BaseSQLModel):
     __tablename__ = "user"
     email: Mapped[str] = mapped_column(String, unique=True)
     password: Mapped[str]
-    role_str: Mapped[str]  #TODO
+    role_str: Mapped[str] 
 
 
 class CreateSchema(BaseModel):

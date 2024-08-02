@@ -10,5 +10,5 @@ router.include_router(auth_router)
 router.include_router(v1_router)
 
 @router.get("/")
-def root(): #TODO
+def root(): 
     return "health_check"

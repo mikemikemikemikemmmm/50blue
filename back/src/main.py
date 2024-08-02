@@ -16,7 +16,7 @@ print(setting.FRONT_ORIGIN)
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     if is_dev_environment():
-        print("drop and create db")
+        print("create db")
         # Base.metadata.drop_all(bind=engine)
         Base.metadata.create_all(bind=engine)
     yield

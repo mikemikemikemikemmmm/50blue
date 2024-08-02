@@ -27,7 +27,7 @@ def get_all(session: SessionDepend):
     return CRUD.get_all(session, UserModel)
 
 
-@router.post("/", response_model=ReadSchema)  # TODO
+@router.post("/", response_model=ReadSchema)
 def create(create_data: CreateSchema, session: SessionDepend):
     same_email_user = (
         session.query(UserModel).filter(UserModel.email == create_data.email).first()
@@ -42,19 +42,32 @@ def create(create_data: CreateSchema, session: SessionDepend):
     session.refresh(new_user)
     return new_user
 
-
-# @router.put("/{id}", response_model=ReadSchema)
-# def update(update_data: UpdateSchema, session: SessionDepend, id: int):
-#     user = session.execute(select(UserModel).where(UserModel.id == id)).scalar()
-#     if not user:
-#         return ErrorHandler.raise_404_not_found()
-#     user.password = update_data.password
-#     user.role = update_data.role.value
-#     session.commit()
-#     session.refresh(user)
-#     return user
-
-
 @router.delete("/{id}")
 def delete(session: SessionDepend, id: int):
     return CRUD.delete_one_by_id(session, UserModel, id)
+
+class UpdatePassword(BaseModel):
+    new_password: str
+@router.put("/put_password/{id}", response_model=ReadSchema)
+def update_password(update_data: UpdatePassword, session: SessionDepend, id: int):
+    user = session.execute(select(UserModel).where(UserModel.id == id)).scalar()
+    if not user:
+        return ErrorHandler.raise_404_not_found("無此用戶")
+    user.password = update_data.new_password
+    session.commit()
+    session.refresh(user)
+    return user
+
+
+class UpdateRole(BaseModel):
+    new_role: Role
+@router.put("/put_role/{id}", response_model=ReadSchema)
+def update_role(update_data: UpdateRole, session: SessionDepend, id: int):
+    user = session.execute(select(UserModel).where(UserModel.id == id)).scalar()
+    if not user:
+        return ErrorHandler.raise_404_not_found("無此用戶")
+    user.role_str = update_data.new_role.value
+    session.commit()
+    session.refresh(user)
+    return user
+

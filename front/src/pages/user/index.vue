@@ -14,13 +14,14 @@
               </v-card-title>
               <v-card-text>
                 <v-container>
-                  <v-text-field v-model="editedData.email" validate-on="input" :rules="[inputRules.requiredString]"
-                    label="信箱" />
-                  <v-text-field type="password" v-model="editedData.password" validate-on="input"
-                    :rules="[inputRules.requiredString]" label="密碼" />
-                  <v-text-field type="password" v-model="editedData.password2" validate-on="input"
-                    :rules="[inputRules.requiredString]" label="請再輸入一次密碼" />
-                  <v-select v-model="editedData.role" label="角色" :items="USER_ROLE_LIST" />
+                  <v-text-field v-if="editingType === 'create_new_user'" v-model="editedData.email" validate-on="input"
+                    :rules="[inputRules.requiredString]" label="信箱" />
+                  <v-text-field v-if="editingType !== 'edit_role'" type="password" v-model="editedData.password"
+                    validate-on="input" :rules="[inputRules.requiredString]" label="密碼" />
+                  <v-text-field v-if="editingType !== 'edit_role'" type="password" v-model="editedData.password2"
+                    validate-on="input" :rules="[inputRules.requiredString]" label="請再輸入一次密碼" />
+                  <v-select v-if="editingType !== 'edit_password'" v-model="editedData.role" label="角色"
+                    :items="USER_ROLE_LIST" />
                 </v-container>
               </v-card-text>
               <v-card-actions>
@@ -48,9 +49,12 @@
         </v-dialog>
       </template>
       <template v-slot:item.actions="{ item }">
-        <!-- <v-icon class="me-2" size="small" @click="handleClickEdit(item)">
-          mdi-pencil
-        </v-icon> -->
+        <v-icon class="me-2" size="small" @click="handleClickEdit(item, 'edit_password')">
+          mdi-key-variant
+        </v-icon>
+        <v-icon class="me-2" size="small" @click="handleClickEdit(item, 'edit_role')">
+          mdi-human-male
+        </v-icon>
         <v-icon size="small" @click="handleClickDelete(item)">
           mdi-delete
         </v-icon>
@@ -61,7 +65,7 @@
 
 <script setup lang="ts">
 import { computed, onBeforeMount, ref } from 'vue'
-import {  UserApi } from '../../api';
+import { UserApi } from '../../api';
 import { inputRules } from '../../utils';
 import { USER_ROLE, USER_ROLE_LIST } from '../../const';
 import { useGlobalStore } from '../../store';
@@ -77,7 +81,7 @@ const headers = [
     sortable: false
   },
   {
-    title: '刪除',
+    title: '修改密碼、修改角色、刪除',
     key: 'actions',
     sortable: false
   },
@@ -112,33 +116,45 @@ const handleCloseDeleteDialog = () => {
 }
 
 //dialog
+type EditType = "edit_password" | "edit_role" | "create_new_user"
+const editingType = ref<EditType>("edit_password")
 const isFormValid = ref(false)
 const isShowDialog = ref(false)
-const editedDataId = ref(-1)
-const dialogTitle = computed(() => {
-  return editedDataId.value === -1 ? '新增用戶' : '編輯用戶'
-})
-const isCreate = () => editedDataId.value === -1
-const editedData = ref<UserApi.CreateData>({
+interface EditingData extends UserApi.CreateData {
+  id: number,
+  password2: string
+}
+const editedData = ref<EditingData>({
+  id: -1,
   email: '',
   password: "",
   password2: "",
   role: USER_ROLE.CLERK
 })
-const defaultData = {
+const defaultDataForCreate = {
+  id: -1,
   email: '',
   password: "",
   password2: "",
   role: USER_ROLE.CLERK
 }
-// const handleClickEdit = (row: DrinkApi.GetResponse) => {
-//   editedDataId.value = row.id
-//   editedData.value = Object.assign({}, row)
-//   isShowDialog.value = true
-// }
+const dialogTitle = computed(() => {
+  return editedData.value.id === -1 ? `新增用戶` : `編輯${editedData.value.email}`
+})
+const handleClickEdit = (row: UserApi.GetResponse, _editingType: EditType) => {
+  editingType.value = _editingType
+  editedData.value = {
+    id: row.id,
+    email: row.email,
+    password: "",
+    password2: "",
+    role: row.role_str
+  }
+  isShowDialog.value = true
+}
 const handleClickCreate = () => {
-  editedDataId.value = -1
-  editedData.value = Object.assign({}, defaultData)
+  editingType.value = "create_new_user"
+  editedData.value = Object.assign({}, defaultDataForCreate)
   isShowDialog.value = true
 }
 const handleCloseDialog = () => {
@@ -148,19 +164,29 @@ const handleDialogSubmit = async () => {
   if (!isFormValid.value) {
     return
   }
-  if (editedData.value.password !== editedData.value.password2) {
+  if (
+    editingType.value !== "edit_role" &&
+    (editedData.value.password !== editedData.value.password2)
+  ) {
     const store = useGlobalStore()
     store.createAlertData({ type: "error", text: "兩次密碼不同" })
     return
   }
-  if (isCreate()) {
-    const { error } = await UserApi.CRUD.createApi(editedData.value)
-    if (error) {
-      return
+  const targetApi = (() => {
+    if (editingType.value === 'create_new_user') {
+      return UserApi.CRUD.createApi(editedData.value)
+    } else if (editingType.value === 'edit_password') {
+      return UserApi.updatePasswordApi(editedData.value.id, editedData.value.password)
+    } else {
+      return UserApi.updateRoleApi(editedData.value.id, editedData.value.role)
     }
-    await fetchData()
-    handleCloseDialog()
+  })()
+  const { error } = await targetApi
+  if (error) {
+    return
   }
+  await fetchData()
+  handleCloseDialog()
 }
 onBeforeMount(() => {
   fetchData()

@@ -34,7 +34,6 @@ def login_to_get_access_token(
     setting = get_settings()
     expire_time = datetime.now() + timedelta(
         minutes=float(setting.ACCESS_TOKEN_EXPIRE_MINUTES)
-        # seconds=5
     )
     str_expire_time = expire_time.strftime(EXPIRE_STR_FORMAT)
     access_token = create_access_token(

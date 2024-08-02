@@ -1,26 +1,34 @@
 from fastapi import APIRouter, Depends
 from typing import List
-from sqlalchemy import text
+from sqlalchemy import text,select
 import json
 
 from src.crud.index import CRUD
-from src.utils.index import get_all_drink
 from src.errorHandler.index import ErrorHandler
 from src.models.topping import ToppingModel
+from src.models.drink import DrinkModel
 from src.db.engine import SessionDepend
 from src.models.order import OrderModel, ReadSchema
 from src.models.order_item import CreateSchema as OrderItemCreateSchema, OrderItemModel
 from src.models.user import Role
 from src.auth.index import required_role
 
-router = APIRouter(prefix="/order",tags=["order"])
+router = APIRouter(prefix="/order", tags=["order"])
 
 
 @router.delete(
     "/{id}", dependencies=[Depends(required_role([Role.MANAGER]))], response_model=int
 )
 def delete(session: SessionDepend, id: int):
-    return CRUD.delete_one_by_id(session, OrderModel, id)
+    order = session.execute(select(OrderModel).where(OrderModel.id == id)).scalar()
+    if not order:
+        return ErrorHandler.raise_404_not_found()
+    order_items = order.order_items
+    session.delete(order)
+    for order_item in order_items:
+        session.delete(order_item)
+    session.commit()
+    return id
 
 
 @router.get(
@@ -28,7 +36,7 @@ def delete(session: SessionDepend, id: int):
     dependencies=[Depends(required_role([Role.ALL_ALLOW]))],
     response_model=List[ReadSchema],
 )
-def get_all(session: SessionDepend): 
+def get_all(session: SessionDepend):
     stmt = """
         SELECT 
             o.id AS id,
@@ -74,16 +82,6 @@ def get_all(session: SessionDepend):
 
 
 # for create
-
-
-def get_target_drink(target_drink_id: int):
-    all_drink = get_all_drink()
-    for drink in all_drink:
-        if drink.id == target_drink_id:
-            return drink
-    return ErrorHandler.raise_404_not_found(f"id:{target_drink_id} drink not found")
-
-
 def create_order_item(create_data: OrderItemCreateSchema, session: SessionDepend):
     toppings = (
         session.query(ToppingModel)
@@ -92,8 +90,12 @@ def create_order_item(create_data: OrderItemCreateSchema, session: SessionDepend
     )
     is_all_target_topping_exist = len(toppings) == len(create_data.topping_ids)
     if not is_all_target_topping_exist:
-        return ErrorHandler.raise_404_not_found("some topping not found")
-    drink = get_target_drink(create_data.drink_id)
+        return ErrorHandler.raise_404_not_found("有配料不存在")
+    drink = (
+        session.query(DrinkModel).filter(DrinkModel.id == create_data.drink_id).first()
+    )
+    if not drink:
+        return ErrorHandler.raise_404_not_found(f"id:{create_data.drink_id}飲品不存在")
     total_price = drink.price + sum(topping.price for topping in toppings)
     new_order_item = OrderItemModel(
         ice_content=create_data.ice_content,
@@ -116,7 +118,7 @@ def create_order(
     order_item_create_data_list: List[OrderItemCreateSchema], session: SessionDepend
 ):
     if len(order_item_create_data_list) == 0:
-        return ErrorHandler.raise_404_not_found("order item not found")
+        return ErrorHandler.raise_404_not_found("沒有訂單品項")
     order_item_list = []
     total_price = 0
     for order_item_create_data in order_item_create_data_list:

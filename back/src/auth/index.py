@@ -16,7 +16,6 @@ setting = get_settings()
 
 EXPIRE_STR_FORMAT = "%Y-%m-%d %H:%M:%S"
 
-
 class TokenResponse(BaseModel):
     access_token: str
     token_type: str
@@ -65,7 +64,6 @@ def get_current_user_by_token(
         return ErrorHandler.raise_401_unauthorized("驗證已過期")
     return user
 
-
 def get_routes_by_role_str(role_str: str):
     try:
         role = get_role_from_string(role_str)
@@ -73,31 +71,22 @@ def get_routes_by_role_str(role_str: str):
         return ErrorHandler.raise_403_no_permission()
     return allow_route_name_map_by_role.get(role, [])
 
-
 def get_role_from_string(role_str):
     for role in Role:
         if role.value == role_str:
             return role
     return ErrorHandler.raise_500_server_error("角色錯誤")
 
-
 def required_role(required_roles: List[Role]):
     def checker(user: UserModel = Depends(get_current_user_by_token)):
         role = get_role_from_string(user.role_str)
-        # TODO
         if Role.ALL_ALLOW in required_roles or role in required_roles:
             return
         return ErrorHandler.raise_403_no_permission()
-
     return checker
 
-
 def get_user_model_by_email(session: SessionDepend, input_email: str):
-    user = session.query(UserModel).filter(UserModel.email == input_email).first()
-    if user is None:
-        return None
-    return user
-
+    return session.query(UserModel).filter(UserModel.email == input_email).first()
 
 def check_user_password(input_password: str, hashed_password: str) -> bool:
     try:
