@@ -2,13 +2,11 @@ from fastapi import APIRouter, Depends
 from typing import List
 from sqlalchemy import select
 
-from src.auth.index import get_hashed_password
 from src.db.engine import SessionDepend
 from src.crud.index import CRUD
 from src.models.user import *
 from src.errorHandler.index import ErrorHandler
-from src.auth.index import required_role
-from src.utils.index import is_dev_environment
+from src.auth.index import required_role,hash_password
 
 router = APIRouter(
     prefix="/user",
@@ -36,7 +34,7 @@ def create(create_data: CreateSchema, session: SessionDepend):
         return ErrorHandler.raise_409_same_name_item_exist("同信箱已存在")
     new_user = UserModel(email=create_data.email)
     new_user.role_str = create_data.role.value
-    new_user.password = get_hashed_password(create_data.password)
+    new_user.password = hash_password(create_data.password)
     session.add(new_user)
     session.commit()
     session.refresh(new_user)
@@ -53,7 +51,7 @@ def update_password(update_data: UpdatePassword, session: SessionDepend, id: int
     user = session.execute(select(UserModel).where(UserModel.id == id)).scalar()
     if not user:
         return ErrorHandler.raise_404_not_found("無此用戶")
-    user.password = update_data.new_password
+    user.password = hash_password(update_data.new_password)
     session.commit()
     session.refresh(user)
     return user

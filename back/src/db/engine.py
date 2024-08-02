@@ -6,7 +6,8 @@ from src.setting.index import get_settings
 SQLALCHEMY_DATABASE_URL = get_settings().SQLALCHEMY_DATABASE_URL
 engine = create_engine(
     SQLALCHEMY_DATABASE_URL, 
-    connect_args={"check_same_thread": False}
+    connect_args={"check_same_thread": False},
+    isolation_level="SERIALIZABLE"
 )
 SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 

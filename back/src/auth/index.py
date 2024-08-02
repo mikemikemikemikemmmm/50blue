@@ -30,7 +30,7 @@ class TokenSourceData(BaseModel):
 pwd_context = CryptContext(schemes=["bcrypt"])
 
 
-def get_hashed_password(password: str):
+def hash_password(password: str):
     return pwd_context.hash(password)
 
 
@@ -91,5 +91,6 @@ def get_user_model_by_email(session: SessionDepend, input_email: str):
 def check_user_password(input_password: str, hashed_password: str) -> bool:
     try:
         return pwd_context.verify(input_password, hashed_password)
-    except:
+    except Exception as e:
+        print(e)
         return ErrorHandler.raise_500_server_error()
