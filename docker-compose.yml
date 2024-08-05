@@ -6,7 +6,7 @@ services:
       - backend
     volumes:
       - front_dist:/app/dist
-
+      
   backend:
     build:
       context: ./back
