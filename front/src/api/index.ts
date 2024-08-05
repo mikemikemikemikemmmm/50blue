@@ -1,5 +1,5 @@
 import axios, { AxiosRequestConfig } from "axios";
-import { ICE_CONTENT, SUGAR_CONTENT, TOKEN_KEY_IN_LOCALSTORAGE, USER_ROLE } from "../const";
+import { ICE_CONTENT, SUGAR_CONTENT, USER_ROLE } from "../const";
 import { getToken, removeTokenAndRedirectToLogin } from "../utils";
 import { useGlobalStore } from "../store";
 

@@ -1,0 +1,28 @@
+services:
+  frontend:
+    build:
+      context: ./front
+    depends_on:
+      - backend
+    volumes:
+      - front_dist:/app/dist
+
+  backend:
+    build:
+      context: ./back
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./back/prod.db:/app/prod.db
+
+  nginx:
+    image: nginx:alpine
+    volumes:
+      - front_dist:/usr/share/nginx/html
+      - ./nginx.conf:/etc/nginx/nginx.conf
+    ports:
+      - "80:80"
+    depends_on:
+      - frontend
+volumes:
+  front_dist:

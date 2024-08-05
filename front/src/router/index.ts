@@ -1,12 +1,4 @@
 import { createRouter, createWebHistory, RouteRecordRaw } from "vue-router"
-import DrinkPage from "../pages/drink/index.vue"
-import OrderPage from "../pages/order/index.vue"
-import StorePage from "../pages/store/index.vue"
-import ToppingPage from "../pages/topping/index.vue"
-import UserPage from "../pages/user/index.vue"
-import LoginPage from "../pages/login/index.vue"
-import CreateOrderPage from "../pages/createOrder/index.vue"
-import NotFound404Page from "../pages/404/index.vue"
 declare module 'vue-router' {
     interface RouteMeta {
         isHiddenOnNav?: boolean
@@ -16,7 +8,7 @@ declare module 'vue-router' {
 const routesData: RouteRecordRaw[] = [
     {
         path: '/login',
-        component: LoginPage,
+        component: () => import("../pages/login/index.vue"),
         name: "login",
         meta: {
             text: "登入"
@@ -24,7 +16,7 @@ const routesData: RouteRecordRaw[] = [
     },
     {
         path: '/drink',
-        component: DrinkPage,
+        component: () => import("../pages/drink/index.vue"),
         name: "drink",
         meta: {
             text: "飲料"
@@ -32,7 +24,7 @@ const routesData: RouteRecordRaw[] = [
     },
     {
         path: '/order',
-        component: OrderPage,
+        component: () => import("../pages/order/index.vue"),
         name: "order",
         meta: {
             text: "訂單"
@@ -48,7 +40,7 @@ const routesData: RouteRecordRaw[] = [
     // },
     {
         path: '/topping',
-        component: ToppingPage,
+        component: () => import("../pages/topping/index.vue"),
         name: "topping",
         meta: {
             text: "配料"
@@ -56,7 +48,7 @@ const routesData: RouteRecordRaw[] = [
     },
     {
         path: '/user',
-        component: UserPage,
+        component: () => import("../pages/user/index.vue"),
         name: "user",
         meta: {
             text: "用戶"
@@ -64,7 +56,7 @@ const routesData: RouteRecordRaw[] = [
     },
     {
         path: '/create_order',
-        component: CreateOrderPage,
+        component: () => import("../pages/createOrder/index.vue"),
         name: "create_order",
         meta: {
             isHiddenOnNav: true,
@@ -73,7 +65,7 @@ const routesData: RouteRecordRaw[] = [
     },
     {
         path: '/:pathMatch(.*)*',
-        component: NotFound404Page,
+        component: () => import("../pages/404/index.vue"),
         name: "not_found",
         meta: {
             isHiddenOnNav: true,

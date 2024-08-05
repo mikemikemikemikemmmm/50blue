@@ -1,5 +1,5 @@
 <template>
-  <v-container style="display: flex;justify-content: center;">
+  <!-- <v-container style="display: flex;justify-content: center;">
     <v-data-table density="compact" style="max-width: fit-content;text-align: center;" hide-default-footer
       :headers="headers" :items="storeDataList">
       <template v-slot:top>
@@ -51,93 +51,92 @@
         </v-icon>
       </template>
     </v-data-table>
-  </v-container>
+  </v-container> -->
 </template>
 
 <script setup lang="ts">
-import { computed, onBeforeMount, ref } from 'vue'
-import { StoreApi } from '../../api';
-import { inputRules } from '../../utils';
-const headers = [
-  {
-    title: '序號',
-    key: 'id',
-    sortable: false
-  },
-  {
-    title: '名稱',
-    key: 'name',
-    sortable: false
-  },
-  {
-    title: '編輯、刪除',
-    key: 'actions',
-    sortable: false
-  },
-]
-const storeDataList = ref<StoreApi.GetResponse[]>([])
-const fetchData = async () => {
-  storeDataList.value = await StoreApi.CRUD.getAllApi()
-}
+// import { computed, onBeforeMount, ref } from 'vue'
+// import { inputRules } from '../../utils';
+// const headers = [
+//   {
+//     title: '序號',
+//     key: 'id',
+//     sortable: false
+//   },
+//   {
+//     title: '名稱',
+//     key: 'name',
+//     sortable: false
+//   },
+//   {
+//     title: '編輯、刪除',
+//     key: 'actions',
+//     sortable: false
+//   },
+// ]
+// const storeDataList = ref<StoreApi.GetResponse[]>([])
+// const fetchData = async () => {
+//   storeDataList.value = await StoreApi.CRUD.getAllApi()
+// }
 
-//delete dialog
-const deletedRowName = ref("")
-const deletedRowId = ref(-1)
-const isShowDeleteDialog = ref(false)
-const handleClickDelete = (row: StoreApi.GetResponse) => {
-  deletedRowName.value = row.name
-  deletedRowId.value = row.id
-  isShowDeleteDialog.value = true
-}
-const handleConfirmDelete = async () => {
-  await StoreApi.CRUD.deleteApi(deletedRowId.value)
-  await fetchData()
-  handleCloseDeleteDialog()
-}
-const handleCloseDeleteDialog = () => {
-  isShowDeleteDialog.value = false
-}
+// //delete dialog
+// const deletedRowName = ref("")
+// const deletedRowId = ref(-1)
+// const isShowDeleteDialog = ref(false)
+// const handleClickDelete = (row: StoreApi.GetResponse) => {
+//   deletedRowName.value = row.name
+//   deletedRowId.value = row.id
+//   isShowDeleteDialog.value = true
+// }
+// const handleConfirmDelete = async () => {
+//   await StoreApi.CRUD.deleteApi(deletedRowId.value)
+//   await fetchData()
+//   handleCloseDeleteDialog()
+// }
+// const handleCloseDeleteDialog = () => {
+//   isShowDeleteDialog.value = false
+// }
 
-//dialog
-const isFormValid = ref(false)
-const isShowDialog = ref(false)
-const editedDataId = ref(-1)
-const dialogTitle = computed(() => {
-  return editedDataId.value === -1 ? '新增店面' : '編輯店面'
-})
-const isCreate = () => editedDataId.value === -1
-const editedData = ref<StoreApi.UpdateData>({
-  name: ''
-})
-const defaultData = ref<StoreApi.CreateData>({
-  name: ''
-})
-const handleClickEdit = (row: StoreApi.GetResponse) => {
-  editedDataId.value = row.id
-  editedData.value = Object.assign({}, row)
-  isShowDialog.value = true
-}
-const handleClickCreate = () => {
-  editedDataId.value = -1
-  editedData.value = Object.assign({}, defaultData.value)
-  isShowDialog.value = true
-}
-const handleCloseDialog = () => {
-  isShowDialog.value = false
-}
-const handleDialogSubmit = async () => {
-  if (!isFormValid.value) {
-    return
-  }
-  if (isCreate()) {
-    await StoreApi.CRUD.createApi(editedData.value)
-  } else {
-    await StoreApi.CRUD.updateApi(editedDataId.value, editedData.value)
-  }
-  await fetchData()
-  handleCloseDialog()
-}
-onBeforeMount(() => {
-  fetchData()
-})
+// //dialog
+// const isFormValid = ref(false)
+// const isShowDialog = ref(false)
+// const editedDataId = ref(-1)
+// const dialogTitle = computed(() => {
+//   return editedDataId.value === -1 ? '新增店面' : '編輯店面'
+// })
+// const isCreate = () => editedDataId.value === -1
+// const editedData = ref<StoreApi.UpdateData>({
+//   name: ''
+// })
+// const defaultData = ref<StoreApi.CreateData>({
+//   name: ''
+// })
+// const handleClickEdit = (row: StoreApi.GetResponse) => {
+//   editedDataId.value = row.id
+//   editedData.value = Object.assign({}, row)
+//   isShowDialog.value = true
+// }
+// const handleClickCreate = () => {
+//   editedDataId.value = -1
+//   editedData.value = Object.assign({}, defaultData.value)
+//   isShowDialog.value = true
+// }
+// const handleCloseDialog = () => {
+//   isShowDialog.value = false
+// }
+// const handleDialogSubmit = async () => {
+//   if (!isFormValid.value) {
+//     return
+//   }
+//   if (isCreate()) {
+//     await StoreApi.CRUD.createApi(editedData.value)
+//   } else {
+//     await StoreApi.CRUD.updateApi(editedDataId.value, editedData.value)
+//   }
+//   await fetchData()
+//   handleCloseDialog()
+// }
+// onBeforeMount(() => {
+//   fetchData()
+// })
 </script>

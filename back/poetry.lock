@@ -72,20 +72,6 @@ tests = ["pytest (>=3.2.1,!=3.3.0)"]
 typecheck = ["mypy"]
 
 [[package]]
-name = "casbin"
-version = "1.36.3"
-description = "An authorization library that supports access control models like ACL, RBAC, ABAC in Python"
-optional = false
-python-versions = ">=3.3"
-files = [
-    {file = "casbin-1.36.3-py3-none-any.whl", hash = "sha256:b54db39f0d552e4cf09b6e55f50456f5c338895c15a3670c8b63b1d8572fe925"},
-    {file = "casbin-1.36.3.tar.gz", hash = "sha256:1af1946c139466e91b15261e1e998f53fdeeb1df409369d4dc236668a96ad157"},
-]
-
-[package.dependencies]
-simpleeval = ">=0.9.11"
-
-[[package]]
 name = "certifi"
 version = "2024.6.2"
 description = "Python package for providing Mozilla's CA Bundle."
@@ -776,16 +762,6 @@ build-docs = ["cloud-sptheme (>=1.10.1)", "sphinx (>=1.6)", "sphinxcontrib-fullt
 totp = ["cryptography"]
 
 [[package]]
-name = "peewee"
-version = "3.17.5"
-description = "a little orm"
-optional = false
-python-versions = "*"
-files = [
-    {file = "peewee-3.17.5.tar.gz", hash = "sha256:e1b6a64192207fd3ddb4e1188054820f42aef0aadfa749e3981af3c119a76420"},
-]
-
-[[package]]
 name = "pyasn1"
 version = "0.6.0"
 description = "Pure-Python implementation of ASN.1 types and DER/BER/CER codecs (X.208)"
@@ -1096,17 +1072,6 @@ files = [
 ]
 
 [[package]]
-name = "simpleeval"
-version = "0.9.13"
-description = "A simple, safe single expression evaluator library."
-optional = false
-python-versions = "*"
-files = [
-    {file = "simpleeval-0.9.13-py2.py3-none-any.whl", hash = "sha256:22a2701a5006e4188d125d34accf2405c2c37c93f6b346f2484b6422415ae54a"},
-    {file = "simpleeval-0.9.13.tar.gz", hash = "sha256:4a30f9cc01825fe4c719c785e3762623e350c4840d5e6855c2a8496baaa65fac"},
-]
-
-[[package]]
 name = "six"
 version = "1.16.0"
 description = "Python 2 and 3 compatibility utilities"
@@ -1242,21 +1207,6 @@ test = ["Jinja2 (>=2.3)", "Pygments (>=1.2)", "backports.zoneinfo", "docutils (>
 test-all = ["Babel (>=1.3)", "Jinja2 (>=2.3)", "Pygments (>=1.2)", "arrow (>=0.3.4)", "backports.zoneinfo", "colour (>=0.0.4)", "cryptography (>=0.6)", "docutils (>=0.10)", "flake8 (>=2.4.0)", "flexmock (>=0.9.7)", "furl (>=0.4.1)", "intervals (>=0.7.1)", "isort (>=4.2.2)", "passlib (>=1.6,<2.0)", "pendulum (>=2.0.5)", "pg8000 (>=1.12.4)", "phonenumbers (>=5.9.2)", "psycopg (>=3.1.8)", "psycopg2 (>=2.5.1)", "psycopg2cffi (>=2.8.1)", "pymysql", "pyodbc", "pytest (==7.4.4)", "python-dateutil", "python-dateutil (>=2.6)", "pytz (>=2014.2)"]
 timezone = ["python-dateutil"]
 url = ["furl (>=0.4.1)"]
-
-[[package]]
-name = "sqlmodel"
-version = "0.0.19"
-description = "SQLModel, SQL databases in Python, designed for simplicity, compatibility, and robustness."
-optional = false
-python-versions = ">=3.7"
-files = [
-    {file = "sqlmodel-0.0.19-py3-none-any.whl", hash = "sha256:6c8125d4101970d031e9aae970b20cbeaf44149989f8366d939f4ab21aab8763"},
-    {file = "sqlmodel-0.0.19.tar.gz", hash = "sha256:95449b0b48a40a3eecf0a629fa5735b9dfc8a5574a91090d24ca17f02246ad96"},
-]
-
-[package.dependencies]
-pydantic = ">=1.10.13,<3.0.0"
-SQLAlchemy = ">=2.0.14,<2.1.0"
 
 [[package]]
 name = "starlette"
@@ -1630,4 +1580,4 @@ files = [
 [metadata]
 lock-version = "2.0"
 python-versions = "^3.12"
-content-hash = "5d7757f53172a253f7c3ee5a8fb87ddef9432bde224314d42e0b972bc0b4ff12"
+content-hash = "9a7c02cffa9c940ff96874a6cc4af0663cc9ff935646a1a847f22a51fc4082c5"

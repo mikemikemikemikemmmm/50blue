@@ -22,7 +22,7 @@ const app = createApp(App)
 app.use(pinia)
 app.use(router)
 app.use(vuetify)
-app.config.errorHandler = (err, vm, info) => {
+app.config.errorHandler = (err) => {
   errorHandler(err as BaseApi.ErrorResponseData)
 }
 app.mount('#app')

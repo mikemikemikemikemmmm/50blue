@@ -13,6 +13,7 @@ from src.setting.index import get_settings
 setting = get_settings()
 print(setting.FRONT_ORIGIN)
 
+
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     if is_dev_environment():
@@ -21,7 +22,13 @@ async def lifespan(app: FastAPI):
         Base.metadata.create_all(bind=engine)
     yield
 
-app = FastAPI(lifespan=lifespan)
+is_dev = is_dev_environment()
+app = FastAPI(
+    lifespan=lifespan,
+    docs_url="/docs" if is_dev else None,
+    redoc_url="/redoc" if is_dev else None,
+    openapi_url="/openapi.json" if is_dev else None
+)
 app.include_router(root_router)
 setup_global_error_handler(app)
 setup_global_middleware(app)

@@ -15,8 +15,8 @@ class SecurityMiddleware(BaseHTTPMiddleware):
             "camera=(), geolocation=(), microphone=()"
         )
         # https://cdn.jsdelivr.net https://fastapi.tiangolo.com for /docs
-        csp_str = "default-src 'self'; style-src 'self' https://cdn.jsdelivr.net; script-src 'self' https://cdn.jsdelivr.net 'unsafe-inline'; img-src 'self' https://fastapi.tiangolo.com data:;"
-        response.headers["Content-Security-Policy"] = csp_str
+        # csp_str = "default-src 'self'; style-src 'self' https://cdn.jsdelivr.net; script-src 'self' https://cdn.jsdelivr.net 'unsafe-inline'; img-src 'self' https://fastapi.tiangolo.com data:;"
+        # response.headers["Content-Security-Policy"] = csp_str
         return response
 
 

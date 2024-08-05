@@ -13,5 +13,6 @@ if __name__ == "__main__":
         load_dotenv(".env.test")
     else:
         load_dotenv(".env.dev")
-
-    uvicorn.run("src.main:app",reload=args.dev)
+    print("current env")
+    print("prod" if args.prod else "dev")
+    uvicorn.run("src.main:app",reload=args.dev,host="0.0.0.0",port=8000)
