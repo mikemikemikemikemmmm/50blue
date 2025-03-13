@@ -1,6 +1,5 @@
-from fastapi import APIRouter, Depends, HTTPException, Response
+from fastapi import APIRouter, Depends
 from typing import List
-from sqlalchemy import select
 
 from src.models.user import Role
 from src.auth.index import required_role

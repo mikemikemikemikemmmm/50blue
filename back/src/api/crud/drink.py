@@ -1,11 +1,8 @@
 from fastapi import APIRouter, Depends
 from typing import List
-from sqlalchemy import select
 
-from src.errorHandler.index import ErrorHandler
 from src.db.engine import SessionDepend
 from src.models.drink import ReadSchema, DrinkModel, CreateSchema, UpdateSchema
-from src.models.order_item import OrderItemModel
 from src.models.user import Role
 from src.crud.index import CRUD
 from src.auth.index import required_role

@@ -1,4 +1,7 @@
 import { createRouter, createWebHistory, RouteRecordRaw } from "vue-router"
+import { hasToken, removeToken, removeTokenAndRedirectToLogin } from "../utils"
+import { checkTokenWhenFristEnterApi } from "../api/auth"
+import { useGlobalStore } from "../store"
 declare module 'vue-router' {
     interface RouteMeta {
         isHiddenOnNav?: boolean
@@ -82,4 +85,32 @@ const router = createRouter({
 router.onError((err: Error) => {
     console.error("Router error:", err.message);
 });
+router.beforeEach(async (to, from) => {
+    const isToLogin = to.name === 'login'
+    if (hasToken()) {
+        const { response } = await checkTokenWhenFristEnterApi()
+        if (response) {
+            const isTokenLegal = response.is_token_legal
+            const store = useGlobalStore()
+            if (isTokenLegal) {
+                store.setAllowRouteNameList(response.allow_route_name_list)
+                if (isToLogin) {
+                    return { name: response.allow_route_name_list[0] }
+                } else {
+                    return true
+                }
+            } else {
+                removeToken()
+                return { name: 'login' }
+            }
+        } else {
+            return { name: 'login' }
+        }
+    } else {
+        if (isToLogin) {
+            return true
+        }
+        return { name: 'login' }
+    }
+})
 export { router, routesData }

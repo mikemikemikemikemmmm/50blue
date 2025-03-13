@@ -24,6 +24,7 @@ router = APIRouter(prefix="/auth", tags=["auth"])
 def login_to_get_access_token(
     session: SessionDepend, oauth2_form_data: OAuth2PasswordRequestForm = Depends()
 ):
+    print(123)
     input_email, input_password = [oauth2_form_data.username, oauth2_form_data.password]
     user = get_user_model_by_email(session, input_email)
     if not user:

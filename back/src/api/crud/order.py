@@ -3,7 +3,6 @@ from typing import List
 from sqlalchemy import text,select
 import json
 
-from src.crud.index import CRUD
 from src.errorHandler.index import ErrorHandler
 from src.models.topping import ToppingModel
 from src.models.drink import DrinkModel
